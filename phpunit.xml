@@ -1,0 +1,7 @@
+<phpunit boostrap="vendore/autoload.php">
+    <testsuites>
+        <testsuite>
+            <directory>./tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

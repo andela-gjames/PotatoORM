@@ -1,0 +1,14 @@
+{
+    "autoload":{
+        "psr-4":{
+            "BB8\\Potatoes\\ORM\\": "./src"
+        }
+    },
+    "require": {
+        "php": ">=5.0"
+    },
+    "require-dev":{
+        "phpunit/phpunit":"4.0",
+        "satooshi/php-coveralls": "^0.6.1"
+    }
+}
