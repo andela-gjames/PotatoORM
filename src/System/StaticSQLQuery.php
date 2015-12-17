@@ -140,6 +140,52 @@ class StaticSQLQuery
     }
 
     /**
+     * Updates set of field
+     * @param  mixed   [$data = null] object of data to update
+     * @param  int     $id database id of data to update
+     * @return boolean if successful or not
+     */
+    public static function update($data = null, $id = null)
+    {
+        //Throw Exception if $data or $id is null
+        if ($data === null || $id = null) {
+            throw new \InvalidArgumentException("Cannot save null to the database table ".self::$tableName);
+        }
+
+        //Remove null and empty elements from array
+        $data = array_filter(self::to_array($data));
+
+        //Remove id from data since it does not need to update
+        unset($data['id']);
+
+        //Get fields to update and their values to replace with
+        $fields     = array_keys($data);
+        $values     = array_values($data);
+
+
+        //Build query
+        $query = "UPDATE ".self::$tableName." SET ";
+        foreach ($fields as $key) {
+            //Create placeholders for binding
+            $query .= $key ." = ?, ";
+        }
+        //Remove trailing comma from query string and build
+        $query = trim($query, ' ,')." WHERE id = $id";
+
+        try {
+            //Prepare query string
+            $STH = static::$dbHandler->prepare($query);
+
+            //Execute query string
+            return $STH->execute($values);
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+
+        return false;
+    }
+
+    /**
      * Converts object to array by casting
      * @param  mixed $object class object to be converted
      * @return array of converted object
