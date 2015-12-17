@@ -49,6 +49,21 @@ class BaseModel
     }
 
 
+    /**
+     * Saves a new Class instance to the database
+     * or updates the if the record already exist
+     * @return boolean false if unsuccesful and true if successful
+     */
+    public function save()
+    {
+        static::initializeQuery();
+        //Check if record already exist
+        if (isset($this->id)) {
+            return StaticSQLQuery::update($this, $this->id);
+        } else {
+            return StaticSQLQuery::insert($this);
+        }
+    }
 
 
     /**
