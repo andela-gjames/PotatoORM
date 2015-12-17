@@ -93,6 +93,53 @@ class StaticSQLQuery
     }
 
     /**
+     * Selects data from database table based on conditions
+     * @param  array [array $data = []] condtions for selecting data
+     * @return array result of query
+     */
+    public static function selectWhere(array $data = [])
+    {
+        //Throw Exception if $data is null
+        if ( array_filter($data) == null ) {
+            throw new \InvalidArgumentException("Provide field to select from table ".self::$tableName);
+        }
+
+        //Get columns to select and values to search for
+        $columns    = array_keys($data);
+        $values    = array_values($data);
+
+        //Set query string and loop through the columns to generate query string
+        $query = "";
+        foreach ($columns as $column) {
+            $query .= " WHERE ".$column." = ? AND" ;
+        }
+
+        //Remove Trailing AND from the end of query string
+        $query      = trim($query, " AND");
+
+        //Build querystring with SELECT statement
+        $queryString    = "SELECT * FROM ".self::$tableName." $query ";
+
+        //Prepare querystring for db access
+        $STH = self::$dbHandler->prepare($queryString);
+
+        //If execute pass, set fetch type to type of calling class
+        if ($STH->execute($values)) {
+            $STH->setFetchMode(\PDO::FETCH_CLASS, self::$className);
+            $result = $STH->fetchAll();
+
+            //Return result as class object if result return is one
+            //Else return class objects in default array
+            if (count($result) == 1) {
+                return $result[0];
+            }
+
+            return $result;
+        }
+        return null;
+    }
+
+    /**
      * Converts object to array by casting
      * @param  mixed $object class object to be converted
      * @return array of converted object
