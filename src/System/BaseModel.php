@@ -65,6 +65,27 @@ class BaseModel
         }
     }
 
+    /**
+     * gets a single value
+     * @param  int   $id represents the table id of the data
+     * @return mixed object of the required data type
+     */
+    public static function find($id)
+    {
+        static::initializeQuery();
+        return StaticSQLQuery::selectWhere(array("id"=>$id));
+    }
+
+    /**
+     * Deletes a record from the database
+     * @param  int     $id id of the table row to delete
+     * @return boolean true or false
+     */
+    public static function destroy($id)
+    {
+        static::initializeQuery();
+        return StaticSQLQuery::delete($id);
+    }
 
     /**
      * Initializes all static query and also
