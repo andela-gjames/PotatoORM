@@ -37,6 +37,18 @@ class BaseModel
         return StaticSQLQuery::select();
     }
 
+    /**
+     * Makes conditional query to database fields
+     * @param  array    $data associative array containing the column name as $key and column value as $value
+     * @return [[Type]] [[Description]]
+     */
+    public static function selectWhere($data)
+    {
+        static::initializeQuery();
+        return StaticSQLQuery::select($data);
+    }
+
+
 
 
     /**
