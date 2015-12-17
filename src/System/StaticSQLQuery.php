@@ -142,13 +142,13 @@ class StaticSQLQuery
     /**
      * Updates set of field
      * @param  mixed   [$data = null] object of data to update
-     * @param  int     $id database id of data to update
+     * @param  int     $tblId database id of data to update
      * @return boolean if successful or not
      */
-    public static function update($data = null, $id = null)
+    public static function update($data = null, $tblId = null)
     {
-        //Throw Exception if $data or $id is null
-        if ($data === null || $id = null) {
+        //Throw Exception if $data or $tblId is null
+        if ($data === null || $tblId = null) {
             throw new \InvalidArgumentException("Cannot save null to the database table ".self::$tableName);
         }
 
@@ -170,7 +170,7 @@ class StaticSQLQuery
             $query .= $key ." = ?, ";
         }
         //Remove trailing comma from query string and build
-        $query = trim($query, ' ,')." WHERE id = $id";
+        $query = trim($query, ' ,')." WHERE id = $tblId";
 
         try {
             //Prepare query string
@@ -184,6 +184,30 @@ class StaticSQLQuery
 
         return false;
     }
+
+    /**
+     * Deletes a record from the databse
+     * @param  int     $tblId table id of element to delete
+     * @return boolean if result is successful or not
+     */
+    public static function delete($tblId)
+    {
+        if ($tblId == null) {
+            throw new \InvalidArgumentException("Provide id of row to delete".self::$tableName);
+        }
+
+        $query  =   "DELETE FROM ".static::$tableName." WHERE ".static::$tableName.".id= ?";
+
+        try {
+            $STH    =   self::$dbHandler->prepare($query);
+            $STH->bindParam(1, $tblId);
+            return $STH->execute();
+        } catch (Exception $ex) {
+            return $ex->getMessage();
+        }
+        return false;
+    }
+
 
     /**
      * Converts object to array by casting
