@@ -1,6 +1,6 @@
 <?php
 
-namespace BB8\Potatoes\ORM\Exceptions;
+namespace BB8\Potatoes\ORM\System\Exceptions;
 
 class InvalidTableNameException extends \Exception
 {

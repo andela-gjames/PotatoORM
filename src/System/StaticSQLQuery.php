@@ -1,32 +1,17 @@
 <?php
 
 namespace BB8\Potatoes\ORM\System;
-use BB8\Potatoes\ORM\System\PDO;
+use BB8\Potatoes\ORM\System\Interfaces\IPDO;
 use BB8\Potatoes\ORM\Exceptions\InvalidTableNameException;
+
 class StaticSQLQuery
 {
-    protected static $tableName;
-    protected static $dbHandler;
-    protected static $className;
-
-    /**
-     * Intializes static properties required for perforing query to db
-     * @param string $tableName name of the database table to connect to
-     * @param string $className name of calling class
-     */
-    public static function init($tableName, $className)
-    {
-        self::$tableName = $tableName;
-        self::$dbHandler = PDO::getInstance()->connect();
-        self::$className = $className;
-    }
-
     /**
      * Queries and gets data from the database
      * @param  array [array $fields = ["*"]] databse columns to return
      * @return array of data from the query result
      */
-    public static function select(array $fields = ["*"])
+    public static function select(array $fields = ["*"], \PDO $connection = null)
     {
         //Convert array to string, seperated by comma
         $fields = implode(",", $fields);
@@ -60,7 +45,7 @@ class StaticSQLQuery
      * @param  mixed [$data         = null] object of class to insert
      * @return boolean  of result of query
      */
-    public static function insert($data = null)
+    public static function insert($data = null, \PDO $connection = null)
     {
         //Through Exception if $data is null
         if ($data === null) {
@@ -97,7 +82,7 @@ class StaticSQLQuery
      * @param  array [array $data = []] condtions for selecting data
      * @return array result of query
      */
-    public static function selectWhere(array $data = [])
+    public static function selectWhere(array $data = [], \PDO $connection = null)
     {
         //Throw Exception if $data is null
         if ( array_filter($data) == null ) {
@@ -145,7 +130,7 @@ class StaticSQLQuery
      * @param  int     $tblId database id of data to update
      * @return boolean if successful or not
      */
-    public static function update($data = null, $tblId = null)
+    public static function update($data = null, $tblId = null, \PDO $connection = null)
     {
         //Throw Exception if $data or $tblId is null
         if ($data === null || $tblId = null) {
@@ -190,7 +175,7 @@ class StaticSQLQuery
      * @param  int     $tblId table id of element to delete
      * @return boolean if result is successful or not
      */
-    public static function delete($tblId)
+    public static function delete($tblId, \PDO $connection = null)
     {
         if ($tblId == null) {
             throw new \InvalidArgumentException("Provide id of row to delete".self::$tableName);

@@ -1,105 +1,78 @@
 <?php
 
 namespace BB8\Potatoes\ORM\System;
-use BB8\Potatoes\ORM\System\StaticSQLQuery;
+use BB8\Potatoes\ORM\System\SQLQuery;
+use BB8\Potatoes\ORM\System\PDOConnection;
 
 class BaseModel
 {
     protected static $tableName;
-    protected static $subClassName;
-    protected static $modelProperties = array();
+    protected static $classNS;
+    protected static $DBH;
 
-    /**
-     * Call static property in class to initialize variables
-     */
-    public function __construct()
+    protected function initialize()
     {
-        static::initializeQuery();
+        static::$classNS        =   get_called_class();
+        static::$tableName      =   static::getTableName(static::$classNS);
+
+        $pdo    =   PDOConnection::getInstance();
+        static::$DBH    =   $pdo->connect();
     }
 
-    /**
-     * Magic method used to set names dynamically
-     * @param string $propName  name of the property to create
-     * @param string $propValue value of the property to be created
-     */
-    public function __set($propName, $propValue)
-    {
-        $this->{$propName} = $propValue;
-    }
-
-    /**
-     * Gets all data relating to calling class from database
-     * @return array of result from databse
-     */
     public static function getAll()
     {
-        static::initializeQuery();
-        return StaticSQLQuery::select();
+        static::initialize();
+        $result =   SQLQuery::select(static::$tableName, static::$classNS, static::$DBH);
+        return $result;
     }
 
-    /**
-     * Makes conditional query to database fields
-     * @param  array    $data associative array containing the column name as $key and column value as $value
-     * @return [[Type]] [[Description]]
-     */
-    public static function selectWhere($data)
+    public static function find($tableID)
     {
-        static::initializeQuery();
-        return StaticSQLQuery::select($data);
+        static::initialize();
+        $result =   SQLQuery::select(
+            static::$tableName,
+            static::$classNS,
+            static::$DBH,
+            array("*"),
+            array("id"=>$tableID)
+        );
+
+        return array_shift($result);
     }
 
+    public static function selectWhere($where, $fields = array("*"))
+    {
+        static::initialize();
+        $result =   SQLQuery::select(static::$tableName, static::$classNS, static::$DBH, $fields, $where);
 
-    /**
-     * Saves a new Class instance to the database
-     * or updates the if the record already exist
-     * @return boolean false if unsuccesful and true if successful
-     */
+        return $result;
+    }
+
+    public static function destroy($tableID)
+    {
+        static::initialize();
+        $result = SQLQuery::delete(static::$tableName, static::$DBH, array("id" => $tableID));
+        return $result;
+    }
+
     public function save()
     {
-        static::initializeQuery();
-        //Check if record already exist
+        static::initialize();
+
         if (isset($this->id)) {
-            return StaticSQLQuery::update($this, $this->id);
+            $result = SQLQuery::update(static::$tableName, static::$DBH, $this);
         } else {
-            return StaticSQLQuery::insert($this);
+            $result = SQLQuery::insert(static::$tableName, static::$DBH, $this);
         }
+
+        return $result;
     }
 
-    /**
-     * gets a single value
-     * @param  int   $id represents the table id of the data
-     * @return mixed object of the required data type
-     */
-    public static function find($id)
+    private final static function getTableName($namespace)
     {
-        static::initializeQuery();
-        return StaticSQLQuery::selectWhere(array("id"=>$id));
+        $classVariables     =   get_class_vars($namespace)['tableName'];
+        $name               =   $classVariables ? strtolower($classVariables) : strtolower($classVariables);
+        $tableName          =   $name ? strtolower($name) : strtolower($name);
+        return $tableName;
     }
-
-    /**
-     * Deletes a record from the database
-     * @param  int     $id id of the table row to delete
-     * @return boolean true or false
-     */
-    public static function destroy($id)
-    {
-        static::initializeQuery();
-        return StaticSQLQuery::delete($id);
-    }
-
-    /**
-     * Initializes all static query and also
-     * Initializes the StaticSQLQuery class
-     */
-    public static function initializeQuery()
-    {
-        if (static::$tableName == null) {
-            static::$tableName =  end(explode("\\", get_called_class()));
-        }
-        static::$subClassName =  get_called_class();
-        static::$tableName =  strtolower(static::$tableName);
-        StaticSQLQuery::init(static::$tableName, static::$subClassName);
-    }
-
-
 }

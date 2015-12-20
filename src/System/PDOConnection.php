@@ -1,8 +1,9 @@
 <?php
 
 namespace BB8\Potatoes\ORM\System;
+use BB8\Potatoes\ORM\System\Interfaces\IPDO;
 
-class PDO
+class PDOConnection implements IPDO
 {
     private $handler;
     private $config;
