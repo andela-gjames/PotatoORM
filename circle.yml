@@ -11,5 +11,3 @@ dependencies:
 test:
   override:
     - phpunit -c phpunit.xml
-  post:
-    - php vendor/bin/coveralls
