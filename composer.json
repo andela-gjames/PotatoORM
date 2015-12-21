@@ -2,7 +2,7 @@
     "autoload":{
         "psr-4":{
             "BB8\\Potatoes\\ORM\\": "./src",
-            "BB8\\Potatoes\\Tests\\": "./tests"
+            "BB8\\Tests\\": "./tests"
         }
     },
     "require": {
