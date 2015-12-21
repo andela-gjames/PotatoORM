@@ -1,6 +1,7 @@
 <?php
 
 namespace BB8\Potatoes\ORM\System;
+use PDO;
 use BB8\Potatoes\ORM\System\Interfaces\IPDO;
 
 class PDOConnection implements IPDO
@@ -18,16 +19,7 @@ class PDOConnection implements IPDO
     {
         //Read config file
         $this->config = parse_ini_file("config.ini");
-
-        //Create connection string
-        $dsn = $this->config['dbtype'].":host=localhost;dbname=".$this->config['dbname'];
-
-        try {
-            //Estable connection
-            $this->handler = new \PDO($dsn, "root", "root");
-        } catch (\PDOException $pdo) {
-            echo ($pdo->getMessage());
-        }
+        $this->setUp();
     }
 
     /**
@@ -53,6 +45,35 @@ class PDOConnection implements IPDO
         return $this->handler;
     }
 
+    private function setUp()
+    {
+
+        try {
+             $dbType = $this->config['dbtype'];
+            switch($dbType)
+            {
+                case 'sqlite':
+                    $dsn = $this->config['dbtype']."::memory:";
+                    $this->handler = new \PDO($dsn);
+                    break;
+                case 'mysql':
+                    $dsn = $this->config['dbtype'].":host=localhost;dbname=".$this->config['dbname'];
+                    $this->handler = new \PDO($dsn, "root", "root");
+                    break;
+            }
+
+            if ($this->config['environment'] == 'development') {
+                $this->handler->setAttribute( PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            }
+
+        } catch (\PDOException $pdo) {
+//            echo ($pdo->getMessage());
+            echo "<pre>";
+            echo ($pdo->xdebug_message);
+            echo "</pre>";
+            die();
+        }
+    }
     /**
      * closes connection to the database
      */
@@ -60,4 +81,5 @@ class PDOConnection implements IPDO
     {
         $this->$handler = null;
     }
+
 }
