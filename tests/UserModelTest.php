@@ -3,6 +3,7 @@
 namespace BB8\Potatoes\Tests;
 
 use BB8\Tests\Mocks\User;
+use BB8\Tests\Mocks\InvalidUser;
 
 class UserModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -69,5 +70,14 @@ class UserModelTest extends \PHPUnit_Framework_TestCase
         $user = User::find(1);
         User::destroy($user->id);
         $this->assertSame(null, User::find(1));
+    }
+
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testInvalidTableNameException()
+    {
+        InvalidUser::getAll();
     }
 }
