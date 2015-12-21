@@ -28,8 +28,9 @@ class SQLQuery
 
             return $result;
         }
-
+        // @codeCoverageIgnoreStart
         throw new InvalidTableNameException("no table with the name $tableName in the database");
+        // @codeCoverageIgnoreEnd
     }
 
     public static function insert($tableName = null, $dbHandler = null, $data = null)
@@ -91,9 +92,11 @@ class SQLQuery
 
     private static function selectFields($tableName = null, $fields = array('*'), $where = null)
     {
+        // @codeCoverageIgnoreStart
         if ($tableName === null) {
             throw new InvalidTableNameException();
         }
+        // @codeCoverageIgnoreEnd
 
         $fields = implode(',', $fields);
         $fieldsString = $fields === '*' ? '*' : $fields;

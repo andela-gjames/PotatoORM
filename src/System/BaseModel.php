@@ -8,6 +8,9 @@ class BaseModel
     protected static $classNS;
     protected static $DBH;
 
+    /**
+     * @codeCoverageIgnore
+     */
     protected static function initialize()
     {
         static::$classNS = get_called_class();
@@ -68,6 +71,9 @@ class BaseModel
         return $result;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     final private static function getTableName($namespace)
     {
         $classVariables = get_class_vars($namespace)['tableName'];
