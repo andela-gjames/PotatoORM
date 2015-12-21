@@ -1,5 +1,5 @@
 #PotatoORM
-
+[![StyleCI](https://styleci.io/repos/48107951/shield)](https://styleci.io/repos/48107951)
 This is an implementation of a poor man's ORM, this ORM helps abstraction from the database/data-access layer,
 providing you with a clean and easy way to create models.
 
