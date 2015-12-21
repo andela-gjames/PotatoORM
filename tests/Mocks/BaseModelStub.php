@@ -6,7 +6,7 @@ use BB8\Potatoes\ORM\System\BaseModel;
 
 class BaseModelStub extends BaseModel
 {
-    protected function initialize()
+    protected static function initialize()
     {
         static::$classNS = get_called_class();
 //        $pdo = new \PDO("sqlite::memory:");

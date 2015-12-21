@@ -8,7 +8,7 @@ class BaseModel
     protected static $classNS;
     protected static $DBH;
 
-    protected function initialize()
+    protected static function initialize()
     {
         static::$classNS = get_called_class();
         static::$tableName = static::getTableName(static::$classNS);
