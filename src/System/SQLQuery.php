@@ -2,26 +2,27 @@
 
 namespace BB8\Potatoes\ORM\System;
 
-use PDO;
 use BB8\Potatoes\ORM\System\Exceptions\InvalidTableNameException;
+use PDO;
 
 class SQLQuery
 {
     /**
-     * Selects data from database table based on conditions
-     * @param  string $tableName             name of database table
-     * @param  string $className             namespace of class to associate result with
-     * @param  PDO    $dbHandler             connection to database
+     * Selects data from database table based on conditions.
+     *
+     * @param string $tableName name of database table
+     * @param string $className namespace of class to associate result with
+     * @param PDO    $dbHandler connection to database
      * @param  array  [$fields               = array("*")] fields to select from database
-     * @param  array  $where                 = null          array of conditional where clause
-     * @return array  of class objects from database
+     * @param array $where = null          array of conditional where clause
+     *
+     * @return array of class objects from database
      */
-    public static function select($tableName, $className, $dbHandler, $fields = array("*"), $where = null)
+    public static function select($tableName, $className, $dbHandler, $fields = ['*'], $where = null)
     {
-        $query  =   static::selectFields($tableName, $fields, $where);
+        $query = static::selectFields($tableName, $fields, $where);
 
-        if($STH    =   $dbHandler->prepare($query))
-        {
+        if ($STH = $dbHandler->prepare($query)) {
             $STH->setFetchMode(\PDO::FETCH_CLASS, $className);
             $result = $where == null ? static::fetch($STH) : static::fetch($STH, array_values($where));
 
@@ -33,33 +34,33 @@ class SQLQuery
 
     public static function insert($tableName = null, $dbHandler = null, $data = null)
     {
-        $data   =   static::toArray($data);
-        $query  =   static::setInsertFields($tableName, $data);
-        $STH    =   $dbHandler->prepare($query);
+        $data = static::toArray($data);
+        $query = static::setInsertFields($tableName, $data);
+        $STH = $dbHandler->prepare($query);
 
-        return !!$STH->execute(array_values($data));
+        return (bool) $STH->execute(array_values($data));
     }
 
-    public static function delete( $tableName = null, $dbHandler = null, $where)
+    public static function delete($tableName = null, $dbHandler = null, $where)
     {
-        $query  =   static::addWhereClause("DELETE FROM $tableName ", $where);
-        $STH    =   $dbHandler->prepare($query);
-        $result =   static::fetch($STH, array_values($where));
+        $query = static::addWhereClause("DELETE FROM $tableName ", $where);
+        $STH = $dbHandler->prepare($query);
+        $result = static::fetch($STH, array_values($where));
 
-        return !!$result;
+        return (bool) $result;
     }
 
     public static function update($tableName, $dbHandler, $data)
     {
-        $data       =   static::toArray($data);
-        $tableID    =   $data["id"];
+        $data = static::toArray($data);
+        $tableID = $data['id'];
         unset($data['id']);
 
         $query = static::setUpdateFields($tableName, $data, $tableID);
 
-        $STH    =   $dbHandler->prepare($query);
-        return !!$STH->execute(array_values($data));
+        $STH = $dbHandler->prepare($query);
 
+        return (bool) $STH->execute(array_values($data));
     }
 
     private static function setUpdateFields($tableName, $data, $tableID)
@@ -68,18 +69,19 @@ class SQLQuery
         $fields = array_keys($data);
         foreach ($fields as $key) {
             //Create placeholders for binding
-            $query .= $key ." = ?, ";
+            $query .= $key.' = ?, ';
         }
 
-        $query = trim($query, ' ,')." WHERE id = ".$tableID;
+        $query = trim($query, ' ,').' WHERE id = '.$tableID;
+
         return $query;
     }
 
     private static function setInsertFields($tableName, $data)
     {
-        $fields = implode(", ", array_keys($data));
+        $fields = implode(', ', array_keys($data));
         //Create placeholders based on the number of data to insert
-        $bindable   = implode(", ", array_values(array_fill(0, count($data), '?')));
+        $bindable = implode(', ', array_values(array_fill(0, count($data), '?')));
 
         $query = "INSERT INTO $tableName ($fields) VALUES ($bindable) ";
         $query = trim($query, ' ,');
@@ -87,43 +89,44 @@ class SQLQuery
         return $query;
     }
 
-    private static function selectFields($tableName = null, $fields = array("*"), $where = null)
+    private static function selectFields($tableName = null, $fields = ['*'], $where = null)
     {
-        if ($tableName == null ) {
+        if ($tableName == null) {
             throw new InvalidTableNameException();
         }
 
-        $fields   =   implode(",", $fields);
-        $fieldsString =   $fields == "*" ? "*": $fields;
+        $fields = implode(',', $fields);
+        $fieldsString = $fields == '*' ? '*' : $fields;
 
         $query = "SELECT $fieldsString FROM $tableName ";
         $sql = $where == null ? $query : static::addWhereClause($query, $where);
+
         return $sql;
     }
 
     private static function addWhereClause($sqlFragment, $where, $condition = 'AND')
     {
         //Get columns to select and values to search for
-        $columns    =   array_keys($where);
+        $columns = array_keys($where);
 //        $values     =   array_values($where);
 
         //Set query string and loop through the columns to generate query string
-        $query = "";
+        $query = '';
         foreach ($columns as $column) {
-            $query .= " WHERE ".$column." = ? $condition" ;
+            $query .= ' WHERE '.$column." = ? $condition";
         }
 
         //Remove Trailing condition(AND | OR) from the end of query string
-        $query      = trim($query, " $condition");
+        $query = trim($query, " $condition");
 
-        return $sqlFragment." ".$query;
+        return $sqlFragment.' '.$query;
     }
 
     private static function fetch($STH, $bindParams = null)
     {
         $bindParams == null ? $STH->execute() : $STH->execute($bindParams);
 
-        $result = array();
+        $result = [];
         while ($row = $STH->fetch()) {
             $result[] = $row;
         }
@@ -137,7 +140,6 @@ class SQLQuery
 
     private static function toArray($object)
     {
-        return (array)$object;
+        return (array) $object;
     }
-
 }
