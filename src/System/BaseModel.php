@@ -32,14 +32,14 @@ class BaseModel
             static::$tableName,
             static::$classNS,
             static::$DBH,
-            ['*'],
-            ['id' => $tableID]
+            array('*'),
+            array('id' => $tableID)
         );
 
         return array_shift($result);
     }
 
-    public static function selectWhere($where, $fields = ['*'])
+    public static function selectWhere($where, $fields = array('*'))
     {
         static::initialize();
         $result = SQLQuery::select(static::$tableName, static::$classNS, static::$DBH, $fields, $where);
@@ -50,7 +50,7 @@ class BaseModel
     public static function destroy($tableID)
     {
         static::initialize();
-        $result = SQLQuery::delete(static::$tableName, static::$DBH, ['id' => $tableID]);
+        $result = SQLQuery::delete(static::$tableName, static::$DBH, array('id' => $tableID));
 
         return $result;
     }

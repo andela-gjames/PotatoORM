@@ -30,7 +30,7 @@ class PDOConnection implements IPDO
     public static function getInstance()
     {
         //Check if object has been created
-        if (self::$instance == null) {
+        if (self::$instance === null) {
             //Create new object of current class if no object exist
             self::$instance = new self();
         }
@@ -63,7 +63,7 @@ class PDOConnection implements IPDO
                     break;
             }
 
-            if ($this->config['environment'] == 'development') {
+            if ($this->config['environment'] === 'development') {
                 $this->handler->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             }
         } catch (\PDOException $pdo) {
