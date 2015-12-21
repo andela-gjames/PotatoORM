@@ -18,13 +18,13 @@ class SQLQuery
      *
      * @return array of class objects from database
      */
-    public static function select($tableName, $className, $dbHandler, $fields = ['*'], $where = null)
+    public static function select($tableName, $className, $dbHandler, $fields = array('*'), $where = null)
     {
         $query = static::selectFields($tableName, $fields, $where);
 
         if ($STH = $dbHandler->prepare($query)) {
             $STH->setFetchMode(\PDO::FETCH_CLASS, $className);
-            $result = $where == null ? static::fetch($STH) : static::fetch($STH, array_values($where));
+            $result = $where === null ? static::fetch($STH) : static::fetch($STH, array_values($where));
 
             return $result;
         }
@@ -89,17 +89,17 @@ class SQLQuery
         return $query;
     }
 
-    private static function selectFields($tableName = null, $fields = ['*'], $where = null)
+    private static function selectFields($tableName = null, $fields = array('*'), $where = null)
     {
-        if ($tableName == null) {
+        if ($tableName === null) {
             throw new InvalidTableNameException();
         }
 
         $fields = implode(',', $fields);
-        $fieldsString = $fields == '*' ? '*' : $fields;
+        $fieldsString = $fields === '*' ? '*' : $fields;
 
         $query = "SELECT $fieldsString FROM $tableName ";
-        $sql = $where == null ? $query : static::addWhereClause($query, $where);
+        $sql = $where === null ? $query : static::addWhereClause($query, $where);
 
         return $sql;
     }
@@ -124,9 +124,9 @@ class SQLQuery
 
     private static function fetch($STH, $bindParams = null)
     {
-        $bindParams == null ? $STH->execute() : $STH->execute($bindParams);
+        $bindParams === null ? $STH->execute() : $STH->execute($bindParams);
 
-        $result = [];
+        $result = array();
         while ($row = $STH->fetch()) {
             $result[] = $row;
         }
