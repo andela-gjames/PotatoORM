@@ -8,7 +8,7 @@ providing you with a clean and easy way to create models.
 
 ##Usage
 
-The procedure of0 usage include creating a class that inherits the `BaseModel` class
+The procedure for usage include creating a class that inherits the `BaseModel` class
 
 ```php
     namespace BB8\Potatoes\ORM\Models;
