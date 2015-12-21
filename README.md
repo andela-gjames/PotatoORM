@@ -1,6 +1,7 @@
 #PotatoORM
 [![StyleCI](https://styleci.io/repos/48107951/shield)](https://styleci.io/repos/48107951)
 [![Circle CI](https://circleci.com/gh/andela-gjames/PotatoORM.svg?style=svg)](https://circleci.com/gh/andela-gjames/PotatoORM)
+[![Circle CI](https://circleci.com/gh/andela-gjames/PotatoORM.svg?style=svg)](https://circleci.com/gh/andela-gjames/PotatoORM)
 
 This is an implementation of a poor man's ORM, this ORM helps abstraction from the database/data-access layer,
 providing you with a clean and easy way to create models.
