@@ -1,9 +1,10 @@
 <?php
+
 namespace BB8\Potatoes\Tests;
 
 use BB8\Tests\Mocks\User;
 
-class UserStubTest extends \PHPUnit_Framework_TestCase
+class UserModelTest extends \PHPUnit_Framework_TestCase
 {
     protected $user;
 
@@ -13,7 +14,7 @@ class UserStubTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Test to ensure all returned values are correct
+     * Test to ensure all returned values are correct.
      */
     public function testGetAll()
     {
@@ -32,13 +33,13 @@ class UserStubTest extends \PHPUnit_Framework_TestCase
 
         //assert that returned type is correct
         $this->assertInstanceOf("BB8\Tests\Mocks\User", $user);
-        $this->assertSame("1", $user->id);
+        $this->assertSame('1', $user->id);
         $this->assertSame('Hedy Copeland', $user->full_name);
     }
 
     public function testSelectWhere()
     {
-        $users = User::selectWhere(array("full_name"=>"Hedy Copeland"));
+        $users = User::selectWhere(['full_name' => 'Hedy Copeland']);
         $this->assertInternalType('array', $users);
         $this->assertSame('Hedy Copeland', $users[0]->full_name);
     }
@@ -46,8 +47,8 @@ class UserStubTest extends \PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $user = new User();
-        $user->full_name = "James George Okpe";
-        $user->description = "There is no knowledge that is not power";
+        $user->full_name = 'James George Okpe';
+        $user->description = 'There is no knowledge that is not power';
         $user->save();
 
         $count = count($user::getAll());
@@ -57,10 +58,10 @@ class UserStubTest extends \PHPUnit_Framework_TestCase
     public function testUpdate()
     {
         $user = User::find(2);
-        $user->full_name = "Darth Vader";
+        $user->full_name = 'Darth Vader';
         $user->save();
         $updatedUser = User::find(2);
-        $this->assertSame("Darth Vader", $updatedUser->full_name);
+        $this->assertSame('Darth Vader', $updatedUser->full_name);
     }
 
     public function testDelete()

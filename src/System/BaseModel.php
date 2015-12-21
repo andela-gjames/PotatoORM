@@ -1,8 +1,6 @@
 <?php
 
 namespace BB8\Potatoes\ORM\System;
-use BB8\Potatoes\ORM\System\SQLQuery;
-use BB8\Potatoes\ORM\System\PDOConnection;
 
 class BaseModel
 {
@@ -12,38 +10,39 @@ class BaseModel
 
     protected function initialize()
     {
-        static::$classNS        =   get_called_class();
-        static::$tableName      =   static::getTableName(static::$classNS);
+        static::$classNS = get_called_class();
+        static::$tableName = static::getTableName(static::$classNS);
 
-        $pdo    =   PDOConnection::getInstance();
-        static::$DBH    =   $pdo->connect();
+        $pdo = PDOConnection::getInstance();
+        static::$DBH = $pdo->connect();
     }
 
     public static function getAll()
     {
         static::initialize();
-        $result =   SQLQuery::select(static::$tableName, static::$classNS, static::$DBH);
+        $result = SQLQuery::select(static::$tableName, static::$classNS, static::$DBH);
+
         return $result;
     }
 
     public static function find($tableID)
     {
         static::initialize();
-        $result =   SQLQuery::select(
+        $result = SQLQuery::select(
             static::$tableName,
             static::$classNS,
             static::$DBH,
-            array("*"),
-            array("id"=>$tableID)
+            ['*'],
+            ['id' => $tableID]
         );
 
         return array_shift($result);
     }
 
-    public static function selectWhere($where, $fields = array("*"))
+    public static function selectWhere($where, $fields = ['*'])
     {
         static::initialize();
-        $result =   SQLQuery::select(static::$tableName, static::$classNS, static::$DBH, $fields, $where);
+        $result = SQLQuery::select(static::$tableName, static::$classNS, static::$DBH, $fields, $where);
 
         return $result;
     }
@@ -51,7 +50,8 @@ class BaseModel
     public static function destroy($tableID)
     {
         static::initialize();
-        $result = SQLQuery::delete(static::$tableName, static::$DBH, array("id" => $tableID));
+        $result = SQLQuery::delete(static::$tableName, static::$DBH, ['id' => $tableID]);
+
         return $result;
     }
 
@@ -68,11 +68,12 @@ class BaseModel
         return $result;
     }
 
-    private final static function getTableName($namespace)
+    final private static function getTableName($namespace)
     {
-        $classVariables     =   get_class_vars($namespace)['tableName'];
-        $name               =   $classVariables ? strtolower($classVariables) : strtolower($classVariables);
-        $tableName          =   $name ? strtolower($name) : strtolower($name);
+        $classVariables = get_class_vars($namespace)['tableName'];
+        $name = $classVariables ? strtolower($classVariables) : strtolower($classVariables);
+        $tableName = $name ? strtolower($name) : strtolower($name);
+
         return $tableName;
     }
 }
