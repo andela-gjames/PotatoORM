@@ -19,12 +19,16 @@ class SQLQuery
     public static function select($tableName, $className, $dbHandler, $fields = array("*"), $where = null)
     {
         $query  =   static::selectFields($tableName, $fields, $where);
-        $STH    =   $dbHandler->prepare($query);
-        $STH->setFetchMode(\PDO::FETCH_CLASS, $className);
 
-        $result = $where == null ? static::fetch($STH) : static::fetch($STH, array_values($where));
+        if($STH    =   $dbHandler->prepare($query))
+        {
+            $STH->setFetchMode(\PDO::FETCH_CLASS, $className);
+            $result = $where == null ? static::fetch($STH) : static::fetch($STH, array_values($where));
 
-        return $result;
+            return $result;
+        }
+
+        throw new InvalidTableNameException("no table with the name $tableName in the database");
     }
 
     public static function insert($tableName = null, $dbHandler = null, $data = null)
@@ -135,4 +139,5 @@ class SQLQuery
     {
         return (array)$object;
     }
+
 }
