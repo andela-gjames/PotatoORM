@@ -4,6 +4,7 @@ namespace BB8\Potatoes\Tests;
 
 use BB8\Tests\Mocks\User;
 use BB8\Tests\Mocks\InvalidUser;
+use BB8\Potatoes\ORM\System\Exceptions\PropertyDoesNotExistException;
 
 class UserModelTest extends \PHPUnit_Framework_TestCase
 {
@@ -28,6 +29,9 @@ class UserModelTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('3246', $allUsers[1]->token);
     }
 
+    /**
+     * Test to find method from BaseModel
+     */
     public function testFind()
     {
         $user = User::find(1);
@@ -36,6 +40,16 @@ class UserModelTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf("BB8\Tests\Mocks\User", $user);
         $this->assertSame('1', $user->id);
         $this->assertSame('Hedy Copeland', $user->full_name);
+    }
+
+    /**
+     * Test if finding a record not in databse returns result or null
+     */
+    public function testNullFind()
+    {
+        $user = User::find(1000);
+
+        $this->assertNull($user);
     }
 
     public function testSelectWhere()
@@ -72,6 +86,11 @@ class UserModelTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(null, User::find(1));
     }
 
+    public function testDeletingNonExistingRowReturnsFalse()
+    {
+        $this->assertFalse(User::destroy(1000));
+    }
+
 
     /**
      * @expectedException \Exception
@@ -79,5 +98,17 @@ class UserModelTest extends \PHPUnit_Framework_TestCase
     public function testInvalidTableNameException()
     {
         InvalidUser::getAll();
+    }
+
+
+    /**
+     * @expectedException \Exception
+     */
+    public function testInvalidPropertyException()
+    {
+        //Test to see that invalid property throws exception
+        $user = new User();
+        $user->age = 10;
+        $user->save();
     }
 }

@@ -2,8 +2,9 @@
 
 namespace BB8\Potatoes\ORM\System;
 
-use BB8\Potatoes\ORM\System\Exceptions\InvalidTableNameException;
 use PDO;
+use BB8\Potatoes\ORM\System\Exceptions\InvalidTableNameException;
+use BB8\Potatoes\ORM\System\Exceptions\PropertyDoesNotExistException;
 
 class SQLQuery
 {
@@ -62,18 +63,22 @@ class SQLQuery
         $data = static::toArray($data);
         $query = static::setInsertFields($tableName, $data);
         $STH = $dbHandler->prepare($query);
+        try {
+            if ($STH->execute(array_values($data))) {
+                //Commit Transaction
+                $dbHandler->commit();
 
-        if ($STH->execute(array_values($data))) {
-            //Commit Transaction
-            $dbHandler->commit();
+                return true;
+            }
 
-            return true;
+                //Rollback to initial state
+                $dbHandler->rollBack();
+
+                return false;
+        } catch (\PDOException $exception) {
+            throw new PropertyDoesNotExistException($exception->getMessage());
+            die();
         }
-
-        //Rollback to initial state
-        $dbHandler->rollBack();
-
-        return false;
     }
 
     /**
@@ -83,7 +88,7 @@ class SQLQuery
      * @param  PDO     [$dbHandler         = null] database handler
      * @param  array   [$where             = null]     Condition to delete with
      *
-     * @return bool true if transaction completes and false otherwise
+     * @return boolean true if transaction completes and false otherwise
      */
     public static function delete($tableName = null, $dbHandler = null, $where = null)
     {
@@ -96,7 +101,8 @@ class SQLQuery
         $STH = $dbHandler->prepare($query);
 
         //Execute and check if completes
-        if ($STH->execute(array_values($where))) {
+        $STH->execute(array_values($where));
+        if ($STH->rowCount() == 1 ) {
             //Commit Transaction
             $dbHandler->commit();
 
