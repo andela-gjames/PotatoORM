@@ -21,7 +21,8 @@ class BaseModel
     }
 
     /**
-     * Returns all record of model in the database
+     * Returns all record of model in the database.
+     *
      * @return array of model objects
      */
     public static function getAll()
@@ -37,9 +38,11 @@ class BaseModel
     }
 
     /**
-     * Finds a particular record from database
-     * @param  integer $tableID Table ID of row to select
-     * @return object  type of calling class
+     * Finds a particular record from database.
+     *
+     * @param int $tableID Table ID of row to select
+     *
+     * @return object type of calling class
      */
     public static function find($tableID)
     {
@@ -60,9 +63,11 @@ class BaseModel
     }
 
     /**
-     * Selects record based on WHERE Clause
-     * @param  array $where                 Parameters to use as WHERE clause condition
+     * Selects record based on WHERE Clause.
+     *
+     * @param array $where Parameters to use as WHERE clause condition
      * @param  array [$fields               = array('*')] fields to select from the query
+     *
      * @return array of calling class data type
      */
     public static function selectWhere($where, $fields = array('*'))
@@ -78,9 +83,11 @@ class BaseModel
     }
 
     /**
-     * Deletes a particular database record
-     * @param  integer $tableID Row ID of record to delete
-     * @return boolean if transaction completes returns true, otherwise false
+     * Deletes a particular database record.
+     *
+     * @param int $tableID Row ID of record to delete
+     *
+     * @return bool if transaction completes returns true, otherwise false
      */
     public static function destroy($tableID)
     {
@@ -94,9 +101,9 @@ class BaseModel
         return $result;
     }
 
-
     /**
-     * Saves a new record or Updates an already created one
+     * Saves a new record or Updates an already created one.
+     *
      * @return [[Type]] [[Description]]
      */
     public function save()

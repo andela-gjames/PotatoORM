@@ -34,11 +34,11 @@ class SQLQuery
 
             //Commit Transaction
             $dbHandler->commit();
+
             return $result;
         }
         //Rollback to initial state
         $dbHandler->rollBack();
-
 
         // @codeCoverageIgnoreStart
         throw new InvalidTableNameException("no table with the name $tableName in the database");
@@ -46,11 +46,13 @@ class SQLQuery
     }
 
     /**
-     * Inserts a new data into the database
+     * Inserts a new data into the database.
+     *
      * @param  string  [$tableName         = null] name of database table
      * @param  PDO     [$dbHandler         = null] database handler
-     * @param  Object  [$data              = null] instantiated object to insert into database
-     * @return boolean true if transaction completes and false if not
+     * @param  object  [$data              = null] instantiated object to insert into database
+     *
+     * @return bool true if transaction completes and false if not
      */
     public static function insert($tableName = null, $dbHandler = null, $data = null)
     {
@@ -62,22 +64,26 @@ class SQLQuery
         $STH = $dbHandler->prepare($query);
 
         if ($STH->execute(array_values($data))) {
-             //Commit Transaction
+            //Commit Transaction
             $dbHandler->commit();
-             return true;
+
+            return true;
         }
 
         //Rollback to initial state
         $dbHandler->rollBack();
+
         return false;
     }
 
     /**
-     * Deletes a record from the database
+     * Deletes a record from the database.
+     *
      * @param  string  [$tableName         = null] name of the database table to delete from
      * @param  PDO     [$dbHandler         = null] database handler
      * @param  array   [$where             = null]     Condition to delete with
-     * @return boolean true if transaction completes and false otherwise
+     *
+     * @return bool true if transaction completes and false otherwise
      */
     public static function delete($tableName = null, $dbHandler = null, $where = null)
     {
@@ -93,16 +99,18 @@ class SQLQuery
         if ($STH->execute(array_values($where))) {
             //Commit Transaction
             $dbHandler->commit();
+
             return true;
         }
         //Rollback to initial state
         $dbHandler->rollBack();
+
         return false;
     }
 
     public static function update($tableName, $dbHandler, $data)
     {
-         //Begin Transaction
+        //Begin Transaction
         $dbHandler->beginTransaction();
 
         //Convert object to array
@@ -122,21 +130,24 @@ class SQLQuery
         if ($STH->execute(array_values($data))) {
             //Execution passed: Commit Transaction
             $dbHandler->commit();
+
             return true;
         }
 
         //Execution failed: Rollback to initial state
         $dbHandler->rollBack();
-        return false;
 
+        return false;
     }
 
     /**
-     * Builds UPDATE Query
-     * @param  string  $tableName name of database table to build query for
-     * @param  array   $data      array of properties to update in Database
-     * @param  integer $tableID   Table ID of field to update
-     * @return string  of built query
+     * Builds UPDATE Query.
+     *
+     * @param string $tableName name of database table to build query for
+     * @param array  $data      array of properties to update in Database
+     * @param int    $tableID   Table ID of field to update
+     *
+     * @return string of built query
      */
     private static function setUpdateFields($tableName, $data, $tableID)
     {
@@ -160,9 +171,11 @@ class SQLQuery
     }
 
     /**
-     * Builds Insert Query
-     * @param  string $tableName name of table to make insert to
-     * @param  array  $data      data to insert to database
+     * Builds Insert Query.
+     *
+     * @param string $tableName name of table to make insert to
+     * @param array  $data      data to insert to database
+     *
      * @return string of built query
      */
     private static function setInsertFields($tableName, $data)
@@ -184,10 +197,12 @@ class SQLQuery
     }
 
     /**
-     * Builds SELECT Query
+     * Builds SELECT Query.
+     *
      * @param  string [$tableName            = null]    database table name to make insert to
      * @param  array  [$fields               = array('*')] fields to select from database table row
-     * @param  array  $where                 = null          WHERE conditions clause
+     * @param array $where = null          WHERE conditions clause
+     *
      * @return string of built SQL SELECT query
      */
     private static function selectFields($tableName = null, $fields = array('*'), $where = null)
@@ -207,7 +222,6 @@ class SQLQuery
         //Build query fragment
         $query = "SELECT $fieldsString FROM $tableName ";
 
-
         //Check if EHERE clasuse needed
         $sql = $where === null ? $query : static::addWhereClause($query, $where);
 
@@ -216,10 +230,12 @@ class SQLQuery
     }
 
     /**
-     * Adds WHERE clause to code fragment
-     * @param  string $sqlFragment         Partially build SQL statement
-     * @param  array  $where               WHERE clause to append
+     * Adds WHERE clause to code fragment.
+     *
+     * @param string $sqlFragment Partially build SQL statement
+     * @param array  $where       WHERE clause to append
      * @param  string [$condition          = 'AND'] Binding conditions to use AND or OR
+     *
      * @return string of built SQL statement
      */
     private static function addWhereClause($sqlFragment, $where, $condition = 'AND')
@@ -241,10 +257,12 @@ class SQLQuery
     }
 
     /**
-     * Runs an execute and fetch query to the database
-     * @param  PDOStatment $STH                 prepared PDO statement
+     * Runs an execute and fetch query to the database.
+     *
+     * @param PDOStatment $STH prepared PDO statement
      * @param  array       [$bindParams         = null] parameters to bind to the exeucute statement
-     * @return array       of fetched data
+     *
+     * @return array of fetched data
      */
     private static function fetch($STH, $bindParams = null)
     {
@@ -264,8 +282,10 @@ class SQLQuery
     }
 
     /**
-     * Converts an object to array
-     * @param  mixed $object object to convert to array
+     * Converts an object to array.
+     *
+     * @param mixed $object object to convert to array
+     *
      * @return array of converted object
      */
     private static function toArray($object)
