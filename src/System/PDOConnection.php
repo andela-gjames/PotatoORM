@@ -49,7 +49,7 @@ class PDOConnection implements IPDO
     }
 
     /**
-     * Setups configuration for database connection
+     * Setups configuration for database connection.
      */
     private function setUp()
     {
