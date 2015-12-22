@@ -2,9 +2,9 @@
 
 namespace BB8\Potatoes\ORM\System;
 
-use PDO;
 use BB8\Potatoes\ORM\System\Exceptions\InvalidTableNameException;
 use BB8\Potatoes\ORM\System\Exceptions\PropertyDoesNotExistException;
+use PDO;
 
 class SQLQuery
 {
@@ -74,7 +74,7 @@ class SQLQuery
                 //Rollback to initial state
                 $dbHandler->rollBack();
 
-                return false;
+            return false;
         } catch (\PDOException $exception) {
             throw new PropertyDoesNotExistException($exception->getMessage());
             die();
@@ -88,7 +88,7 @@ class SQLQuery
      * @param  PDO     [$dbHandler         = null] database handler
      * @param  array   [$where             = null]     Condition to delete with
      *
-     * @return boolean true if transaction completes and false otherwise
+     * @return bool true if transaction completes and false otherwise
      */
     public static function delete($tableName = null, $dbHandler = null, $where = null)
     {
@@ -102,7 +102,7 @@ class SQLQuery
 
         //Execute and check if completes
         $STH->execute(array_values($where));
-        if ($STH->rowCount() == 1 ) {
+        if ($STH->rowCount() === 1) {
             //Commit Transaction
             $dbHandler->commit();
 
