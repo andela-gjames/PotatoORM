@@ -48,10 +48,16 @@ class PDOConnection implements IPDO
         return $this->handler;
     }
 
+    /**
+     * Setups configuration for database connection
+     */
     private function setUp()
     {
         try {
+            //Get the database type
             $dbType = $this->config['dbtype'];
+
+            //Check type of database and create connection based on the type
             switch ($dbType) {
                 case 'sqlite':
                     $dsn = $this->config['dbtype'].'::memory:';
@@ -80,6 +86,6 @@ class PDOConnection implements IPDO
      */
     public function close()
     {
-        $this->$handler = null;
+        $this->handler = null;
     }
 }
