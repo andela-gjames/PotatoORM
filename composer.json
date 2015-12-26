@@ -1,15 +1,26 @@
 {
-    "autoload":{
-        "psr-4":{
-            "BB8\\Potatoes\\ORM\\": "./src",
-            "BB8\\Tests\\": "./tests"
+    "name": "bb8/orm",
+    "description": "A simple light weight ORM that makes life easy for you",
+    "type": "git",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "George James",
+            "email": "georgeokpe1116@gmail.com"
         }
-    },
-    "require": {
+    ],
+    "minimum-stability": "stable",
+     "require": {
         "php": ">=5.0"
     },
     "require-dev":{
         "phpunit/phpunit":"4.0",
         "satooshi/php-coveralls": "^0.6.1"
+    },
+    "autoload":{
+        "psr-4":{
+            "BB8\\Potatoes\\ORM\\": "./src",
+            "BB8\\Tests\\": "./tests"
+        }
     }
 }
